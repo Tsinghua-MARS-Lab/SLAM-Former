@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="SLAM-Former">
+  <meta name="keywords" content="SLAM, Transformer">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SLAM-Former: Putting SLAM into One Transformer</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="stylesheet" href="./static/css/compare.css">
+
+  <!--link rel="icon" href="./static/images/favicon.svg"-->
+  <link rel="icon" href="./static/ims/logo.png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+
+<script
+  defer
+  src="https://unpkg.com/img-comparison-slider@7/dist/index.js"
+></script>
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/img-comparison-slider@7/dist/styles.css"
+/>
+  <!-- script type="text/javascript" src="./static/js/vanilla-tilt.js"></script-->
+  <script src="./static/js/index.js"></script>
+</head>
+
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://group.iiis.tsinghua.edu.cn/~marslab/#/">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://group.iiis.tsinghua.edu.cn/~marslab/#/">
+            Homepage
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <img src="./static/ims/logo.png" width="100">
+          <h1 class="title is-1 publication-title">SLAM-Former</h1> 
+          <h1 class="title is-2 publication-title">Putting SLAM into One Transformer</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://jarrome.github.io">Yijun Yuan</a>,</span>
+            <span class="author-block">
+              <a href="https://zgchen33.github.io">Zhuoguang Chen</a>,</span>
+            <span class="author-block">
+              <a href="https://connorkevin.github.io">Kenan Li</a>,</span>
+            <span class="author-block">
+              <a href="https://William-Wang-1009.github.io">Weibang Wang</a>,</span>
+            <span class="author-block">
+              <a href="https://hangzhaomit.github.io/">Hang Zhao</a></span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">IIIS, Tsinghua University
+</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <!--span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark" style="background-color: #808080">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span-->
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark" >
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/Tsinghua-MARS-Lab/SLAM-Former"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+
+      <div class="column is-four-fifths">
+
+        <h1 class="title is-3">SLAM in the new Age. :D</h1>
+        <div class="content has-text-justified">
+	  <center><img src="./static/ims/teaser.png" class="center" style="max-width: 100%;max-height: 100%;display: inline-block;"></center>
+        </div>
+      </div>
+    </div>
+  </div>
+</section -->
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+
+        <h1 class="title is-3">Abstract</h1>
+        <div class="content has-text-justified">
+        We present SLAM-Former, a novel neural approach that integrates full SLAM capabilities into a single transformer. 
+Similar to traditional SLAM systems, SLAM-Former comprises both a frontend and a backend that operate in tandem. 
+The frontend processes sequential monocular images in real-time for incremental mapping and tracking, while the backend performs global refinement to ensure a geometrically consistent result. 
+This alternating execution allows the frontend and backend to mutually promote one another, enhancing overall system performance.
+Comprehensive experimental results demonstrate that SLAM-Former achieves superior or highly competitive performance compared to state-of-the-art dense SLAM methods.
+	  <!--center><img src="./static/ims/cover.png" class="center" style="max-width: 100%;max-height: 100%;display: inline-block;"></center-->
+        <center><img src="./static/ims/teaser.png" class="center" style="max-width: 100%;max-height: 100%;display: inline-block;"></center>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</section >
+
+
+
+
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h3 class="title is-4">SLAM-Former</h3>
+        <div class="content has-text-justified">
+SLAM-Former consists of a frontend and a backend within the same Transformer architecture, working in cooperation.
+        </div>
+        <center>
+          <img src="./static/ims/slam.png" class="center" style="max-width: 100%;max-height: 100%;display: inline-block;">
+        </center>
+        <div class="content has-text-justified">
+The training strategy is designed to enable a single trans-
+former to handle both frontend and backend SLAM func-
+tionalities.
+        </div>
+        <center>
+          <img src="./static/ims/train.png" class="center" style="max-width: 100%;max-height: 100%;display: inline-block;">
+        </center>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h3 class="title is-4">Demonstration</h3>
+        <div class="content has-text-justified">
+        </div>
+        <center>
+        </center>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- section class="section">
+  <div class="container is-max-desktop">
+
+    <h2 class="title is-3">Preprint</h2>
+    <center><embed src="./static/ims/view.pdf" width="800px" height="2100px" /></center>
+  </div>
+</section-->
+
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{slam-former,
+      title={SLAM-Former: Putting SLAM into One Transformer}, 
+      author={Yijun Yuan, Zhuoguang Chen, Kenan Li, Weibang Wang, and Hang Zhao},
+      journal={arXiv preprint arXiv:2509.xxxxx},
+      year={2025}
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+This webpage template is from Nerfies. We appreciate their open release of this template.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  <!--script src="./static/js/compare.js"></script-->
+
+</script>
+</body>
+</html>
