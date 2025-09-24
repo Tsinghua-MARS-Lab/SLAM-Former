@@ -18,7 +18,7 @@ IIIS, Tsinghua University
 ```
 
 ### Updates
-* [Sep 24, 2025] Some good blogs can help you read SLAM-Former: [here](https://blog.csdn.net/moxibingdao/article/details/152014653?fromshare=blogdetail&sharetype=blogdetail&sharerId=152014653&sharerefer=PC&sharesource=JarroYuan&sharefrom=from_link) and [here](https://zhuanlan.zhihu.com/p/1954116490354721029).
+* [Sep 24, 2025] Some good blogs can help you read SLAM-Former: [here](https://mp.weixin.qq.com/s/si5EVD1y-1kahadYCx0h8A) and [here](https://zhuanlan.zhihu.com/p/1954116490354721029).
 * [Sep 23, 2025] Preprint release.
 
 ### TODO
