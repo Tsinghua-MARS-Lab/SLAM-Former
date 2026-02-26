@@ -27,8 +27,8 @@ IIIS, Tsinghua University
 
 ### Data
 * **Links:**
-  * [Hugging Face - SLF Dataset](https://huggingface.co/datasets/KevinConnorLee/SLF/tree/main) (ARKitScenes, MVS-Synth, ScanNet)
-  * [Hugging Face - Preprocessed Hypersim](https://huggingface.co/datasets/KevinConnorLee/preprocessed_Hypersim/tree/main) (Hypersim)
-  * ⏳ [Hugging Face - SLF Dataset](https://huggingface.co/datasets/KevinConnorLee/SLF/tree/main) (ScanNet++, Blended-MVS, MegaDepth) - *Coming soon*
+  * [Hugging Face](https://huggingface.co/datasets/KevinConnorLee/SLF/tree/main) (ARKitScenes, MVS-Synth, ScanNet)
+  * [Hugging Face](https://huggingface.co/datasets/KevinConnorLee/preprocessed_Hypersim/tree/main) (Hypersim)
+  * ⏳ [Hugging Face](https://huggingface.co/datasets/KevinConnorLee/SLF/tree/main) (ScanNet++, Blended-MVS, MegaDepth) - *Coming soon*
 
 
