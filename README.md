@@ -18,10 +18,12 @@ IIIS, Tsinghua University
 ```
 
 ### Updates
+* [Feb 26, 2026] Provides the training data.
 * [Sep 24, 2025] Some good blogs can help you read SLAM-Former: [here](https://mp.weixin.qq.com/s/si5EVD1y-1kahadYCx0h8A) and [here](https://zhuanlan.zhihu.com/p/1954116490354721029).
 * [Sep 23, 2025] Preprint release.
 
 ### TODO
-* Demo/Video/Figure release [in 1 week] 
-* Code release
+* Code release (Under factorizing, SLAM code in one week, training code in two weeks)
 
+### Data
+* Link: https://huggingface.co/datasets/KevinConnorLee/SLF/tree/main
