@@ -26,4 +26,9 @@ IIIS, Tsinghua University
 * Code release (Under factorizing, SLAM code in one week, training code in two weeks)
 
 ### Data
-* Link: https://huggingface.co/datasets/KevinConnorLee/SLF/tree/main
+* **Links:**
+  * [Hugging Face - SLF Dataset](https://huggingface.co/datasets/KevinConnorLee/SLF/tree/main) (ARKitScenes, MVS-Synth, ScanNet)
+  * [Hugging Face - Preprocessed Hypersim](https://huggingface.co/datasets/KevinConnorLee/preprocessed_Hypersim/tree/main) (Hypersim)
+  * ⏳ [Hugging Face - SLF Dataset](https://huggingface.co/datasets/KevinConnorLee/SLF/tree/main) (ScanNet++, Blended-MVS, MegaDepth) - *Coming soon*
+
+
