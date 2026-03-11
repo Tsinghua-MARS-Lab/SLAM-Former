@@ -18,6 +18,7 @@ IIIS, Tsinghua University
 ```
 
 ### Updates
+* [Mar 11, 2026] Released training code. See the train branch for details.
 * [Mar 4, 2026] Released SLAM code with KV pruning available.
 * [Feb 26, 2026] Provides the training data.
 * [Sep 24, 2025] Some good blogs can help you read SLAM-Former: [here](https://mp.weixin.qq.com/s/si5EVD1y-1kahadYCx0h8A) and [here](https://zhuanlan.zhihu.com/p/1954116490354721029).
@@ -65,9 +66,6 @@ python slam/demo.py \
 python slam/visualize_results.py \
     --result_dir /path/to/output_dir
 ```
-
-### TODO
-* Code release (Under factorizing, training code in one weeks)
 
 ### Data
 * **Links:**
