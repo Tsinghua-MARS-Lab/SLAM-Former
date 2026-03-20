@@ -45,6 +45,7 @@ pip install -e .
 ```
 
 ### Running SLAM Demo
+Download checkpoint: [v1](https://huggingface.co/Jarrome/SLAM-Former/resolve/main/518/checkpoint-10.pth.model) 
 
 Prepare a folder containing your image sequence, then run:
 
@@ -67,11 +68,22 @@ python slam/visualize_results.py \
     --result_dir /path/to/output_dir
 ```
 
-### Data
+### Training Data
 * **Links:**
   * [Hugging Face](https://huggingface.co/datasets/KevinConnorLee/SLF/tree/main) (ARKitScenes, MVS-Synth, ScanNet)
   * [Hugging Face](https://huggingface.co/datasets/KevinConnorLee/preprocessed_Hypersim/tree/main) (Hypersim)
   * ⏳ [Hugging Face](https://huggingface.co/datasets/KevinConnorLee/SLF/tree/main) (ScanNet++, Blended-MVS, MegaDepth) - *Coming soon*
 
-### Checkpoint
+### Checkpoint List
 * [Hugging Face](https://huggingface.co/Jarrome/SLAM-Former) — recommended to use `--target_size 518` for inference.
+
+
+
+
+## License
+This project adopts a dual-licensing strategy:
+
+| Component | License | Commercial Use |
+| :--- | :--- | :--- |
+| **Code** | [BSD 3-Clause](LICENSE) | **Permitted** |
+| **Model Weights** (checkpoints) | [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) | **Strictly Non-Commercial** |
