@@ -8,6 +8,7 @@ import argparse
 
 import time
 import open3d as o3d
+from PIL import Image
 from rich import print
 import matplotlib.pyplot as plt
 from scipy.spatial.transform import Rotation as R
@@ -91,6 +92,7 @@ class SLAM:
         self.extrins = []
         self.intrins = []
         self.frames = []
+        self.frame_colors = []
         self.kf_frames = []
 
         # 
@@ -199,11 +201,13 @@ class SLAM:
         H_,W_,_ = image.shape
         frame = utils.load_image(image, self.target_size)
         self.H,self.W,_ = frame.shape
+        frame_color = self.prepare_pointcloud_rgb(image, frame.shape[1:])
         st = self.time
         self.last_kf = frame.cuda()
         self.kf_frames.append(self.last_kf)
         self.last_kfid = self.fid
         self.frames.append(self.last_kf.clone())
+        self.frame_colors.append(frame_color)
         self.kid += 1
         print("[italic purple] # KEYFRAME", self.kid)
         self.kf_timestamps.append(self.cur_timestamp)
@@ -357,6 +361,30 @@ class SLAM:
     def nf(self):
         return self.fid+1
 
+    def prepare_pointcloud_rgb(self, image, target_hw):
+        """Return RGB colors aligned to the model point grid."""
+        target_h, target_w = target_hw
+        if image.shape[-1] == 4:
+            rgb = cv2.cvtColor(image, cv2.COLOR_BGRA2RGBA)
+        else:
+            rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+        img = Image.fromarray(rgb).convert("RGB")
+        width, height = img.size
+        new_width = target_w
+        new_height = round(height * (new_width / width) / 14) * 14
+        img = img.resize((new_width, new_height), Image.Resampling.BICUBIC)
+
+        if new_height > target_h:
+            start_y = (new_height - target_h) // 2
+            img = img.crop((0, start_y, new_width, start_y + target_h))
+
+        colors = np.asarray(img, dtype=np.float64) / 255.0
+        assert colors.shape[:2] == (target_h, target_w), (
+            f"RGB shape {colors.shape[:2]} does not match point grid {(target_h, target_w)}"
+        )
+        return colors
+
     def terminate(self):
         if self.nkf % self.backend_every != 0:
             self.signal_backend = True
@@ -386,7 +414,8 @@ class SLAM:
         point_clouds = [pts[0,s] for s in range(S)]
         #conf_threshold = np.percentile(conf, 15)
         #confs = [conf[0,s]>=conf_threshold for s in range(S)]
-        colors = torch.stack(self.frames[-S:]).permute(0,2,3,1).reshape(-1,3).cpu().numpy()[:,::-1] # S,H,W,C
+        assert len(self.frame_colors) >= S, "Not enough cached RGB keyframes for extracted point cloud"
+        colors = np.stack(self.frame_colors[-S:], axis=0).reshape(-1,3) # S,H,W,C
         confs = conf.reshape(-1)
 
 
@@ -417,18 +446,25 @@ class SLAM:
         conf_threshold = np.percentile(conf, 15)
         confs = [conf[0,s]>=conf_threshold for s in range(S)]
 
-        colors = torch.stack(self.frames).permute(0,2,3,1).reshape(-1,3).cpu().numpy()[:,::-1] # S,H,W,C
+        assert len(self.frame_colors) >= S, "Not enough cached RGB keyframes for saved point cloud"
+        colors = np.stack(self.frame_colors[-S:], axis=0).reshape(-1,3) # S,H,W,C
         msk = np.stack(confs).reshape(-1)
         pcd = o3d.geometry.PointCloud()
         pcd.points = o3d.utility.Vector3dVector(pts.reshape(-1,3).astype(np.float64)[msk])
-        pcd.colors = o3d.utility.Vector3dVector(colors.reshape(-1,3).astype(np.float64)[msk])
+        pcd.colors = o3d.utility.Vector3dVector(colors.astype(np.float64)[msk])
         #downpcd = pcd.voxel_down_sample(voxel_size=0.005)
         o3d.io.write_point_cloud(f"{output_path}.ply", pcd)
         camera_pose = result['camera_poses'].cpu() #torch.Size([1, 14, 4,4])
         poses = camera_pose[0].numpy() 
 
         self.write_poses_to_file(f"{output_path}_traj.txt", poses, self.kf_timestamps)
-        self.save_framewise_pointclouds(f"{output_path}_pc", point_clouds, self.kf_timestamps, confs)
+        self.save_framewise_pointclouds(
+            f"{output_path}_pc",
+            point_clouds,
+            self.kf_timestamps,
+            confs,
+            np.stack(self.frame_colors[-S:], axis=0),
+        )
 
         return result
 
@@ -443,11 +479,12 @@ class SLAM:
                 output = np.array([float(frame_id), x, y, z, *quaternion])
                 f.write(" ".join(f"{v:.8f}" for v in output) + "\n")
 
-    def save_framewise_pointclouds(self, filename, pointclouds, frame_ids, conf_masks):
+    def save_framewise_pointclouds(self, filename, pointclouds, frame_ids, conf_masks, colors):
         os.makedirs(filename, exist_ok=True)
-        for frame_id, pointcloud, conf_masks in zip(frame_ids, pointclouds, conf_masks):
+        assert len(pointclouds) == len(colors), "Point clouds and RGB colors must have the same length"
+        for frame_id, pointcloud, conf_masks, color in zip(frame_ids, pointclouds, conf_masks, colors):
             # save pcd as numpy array
-            np.savez(f"{filename}/{frame_id}.npz", pointcloud=pointcloud, mask=conf_masks)
+            np.savez(f"{filename}/{frame_id}.npz", pointcloud=pointcloud, mask=conf_masks, color=color)
 
 
 def get_parser():
@@ -536,4 +573,3 @@ if __name__ == '__main__':
             img = cv2.resize(img, (int(W*args.resize_rate), int(H*args.resize_rate)), cv2.INTER_CUBIC)
         slam.step(frame_id, img)
     result = slam.terminate()
-

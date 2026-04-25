@@ -58,17 +58,23 @@ python slam/demo.py \
     --retention_ratio 0.5
 ```
 
-For evaluation, please use 100% kv: ```--retention_ratio 1```
-
+For evaluation, please use 100% kv: ```--retention_ratio 1```. See [issue #15](https://github.com/Tsinghua-MARS-Lab/SLAM-Former/issues/15) for details.
 
 ### Visualization
 
-**Real-time visualization** during inference: add `--vis` to the command above. The 3D reconstruction process can be viewed interactively in [Rerun](https://rerun.io/).
+**Real-time visualization** during inference: add `--vis` to the command above. The 3D reconstruction process can be viewed interactively in [Rerun](https://rerun.io/). This mode is intended for local machines with a desktop session; it is not recommended on remote servers because it depends on launching an interactive viewer during inference.
 
-**Static visualization** of saved results:
+**Static visualization** of saved results: first run `slam/demo.py` without `--vis` to save `final.ply`, `final_traj.txt`, and `final_pc/`, then start the browser-based viewer:
 ```bash
 python slam/visualize_results.py \
-    --result_dir /path/to/output_dir
+    --result_dir /path/to/output_dir \
+    --port 8080
+```
+
+The static viewer serves an HTTP page at `http://localhost:8080`. This mode is recommended for remote servers: forward the port to your local machine, then open the forwarded URL in your browser.
+
+```bash
+ssh -L 8080:localhost:8080 user@remote-server
 ```
 
 ### Training Data
