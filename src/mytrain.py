@@ -55,7 +55,7 @@ from accelerate.logging import get_logger
 from datetime import timedelta
 import torch.multiprocessing
 
-from pi3.models.slamformer import SLAMFormer 
+from slamformer.models.slamformer import SLAMFormer 
 
 
 torch.multiprocessing.set_sharing_strategy("file_system")
