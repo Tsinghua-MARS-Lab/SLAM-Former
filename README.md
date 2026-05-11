@@ -18,7 +18,8 @@ IIIS, Tsinghua University
 ```
 
 ### Updates
-* [Mar 11, 2026] Released training code. See the train branch for details.
+* [May 11, 2026] Added two ConvHead checkpoint variants. `V1.1.pth` is recommended with `--target_size 518`; `V1.1-long.pth` is recommended with `--target_size 224`. `V1.1-long.pth` is trained with scaled sequence lengths and supports longer-sequence inference. ConvHead mainly fixes the grid artifact issue. Thanks to Pi3X for the insight.
+* [Mar 11, 2026] Released training code. See the [training branch](https://github.com/Tsinghua-MARS-Lab/SLAM-Former/tree/training) for details.
 * [Mar 4, 2026] Released SLAM code with KV pruning available.
 * [Feb 26, 2026] Provides the training data.
 * [Sep 24, 2025] Some good blogs can help you read SLAM-Former: [here](https://mp.weixin.qq.com/s/si5EVD1y-1kahadYCx0h8A) and [here](https://zhuanlan.zhihu.com/p/1954116490354721029).
@@ -84,6 +85,8 @@ ssh -L 8080:localhost:8080 user@remote-server
 
 ### Checkpoint List
 * [v1](https://huggingface.co/Jarrome/SLAM-Former) — recommended to use `--target_size 518` for inference.
+* [V1.1.pth](https://huggingface.co/Jarrome/SLAM-Former/blob/main/518/V1.1.pth) — ConvHead checkpoint, recommended to use `--target_size 518` for inference.
+* [V1.1-long.pth](https://huggingface.co/Jarrome/SLAM-Former/blob/main/224/V1.1-long.pth) — ConvHead checkpoint, recommended to use `--target_size 224` for inference; trained with scaled sequence lengths to support longer-sequence inference.
 
 
 

@@ -68,9 +68,18 @@ class SLAM:
         self.backend_time = []
 
         # model params
-        self.model = SLAMFormer(retention_ratio=retention_ratio, bn_every=bn_every)
+        ckpt, ckpt_raw = self.load_checkpoint()
+        use_conv_head = self.checkpoint_uses_conv_head(ckpt)
+        if use_conv_head:
+            print("Detected ConvHead in checkpoint; setting use_conv_head=True.")
+
+        self.model = SLAMFormer(
+            retention_ratio=retention_ratio,
+            bn_every=bn_every,
+            use_conv_head=use_conv_head,
+        )
         self.model = self.model.eval()
-        self.load_model()
+        self.load_model(ckpt, ckpt_raw)
         self.model.eval()
         self.model.to('cuda')
 
@@ -107,7 +116,7 @@ class SLAM:
             self.Twk = np.eye(4)
             self.K = np.eye(3)
 
-    def load_model(self):
+    def load_checkpoint(self):
         ckpt_raw = torch.load(self.ckpt_path, map_location='cuda', weights_only=False)
 
         if isinstance(ckpt_raw, dict):
@@ -120,6 +129,15 @@ class SLAM:
             ckpt = ckpt_raw
 
         ckpt = utils.strip_module(ckpt)
+        return ckpt, ckpt_raw
+
+    def checkpoint_uses_conv_head(self, ckpt):
+        return any(key.startswith("point_head.upsample_blocks.") for key in ckpt)
+
+    def load_model(self, ckpt=None, ckpt_raw=None):
+        if ckpt is None:
+            ckpt, ckpt_raw = self.load_checkpoint()
+
         self.model.load_state_dict(ckpt, strict=False)
         del ckpt, ckpt_raw 
 
@@ -133,7 +151,7 @@ class SLAM:
             self.extrins.append(torch.eye(4))
             return True
 
-        frame = utils.load_image(image, self.target_size)
+        frame = utils.load_image(image, target_size=self.target_size)
         _,H,W = frame.shape
 
 
@@ -199,7 +217,7 @@ class SLAM:
         torch.cuda.empty_cache()
         # run T-frontend
         H_,W_,_ = image.shape
-        frame = utils.load_image(image, self.target_size)
+        frame = utils.load_image(image, target_size=self.target_size)
         self.H,self.W,_ = frame.shape
         frame_color = self.prepare_pointcloud_rgb(image, frame.shape[1:])
         st = self.time

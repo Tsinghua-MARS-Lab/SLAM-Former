@@ -12,12 +12,14 @@ from .layers.block import BlockRope
 from .layers.attention import FlashAttentionRope
 from .layers.transformer_head import TransformerDecoder, LinearPts3d
 from .layers.camera_head import CameraHead
+from .layers.conv_head import ConvHead
 from .dinov2.hub.backbones import dinov2_vitl14, dinov2_vitl14_reg
 from huggingface_hub import PyTorchModelHubMixin
 from torch.utils.checkpoint import checkpoint
 from typing import Optional, Tuple, List, Any
 from dataclasses import dataclass
 from transformers.file_utils import ModelOutput
+
 
 
 import pdb
@@ -30,10 +32,9 @@ class SLAMFormer(nn.Module, PyTorchModelHubMixin):
             self,
             pos_type='rope100',
             decoder_size='large',
-            dpt=False,
-            hd=False,
             retention_ratio=0.5,
-            bn_every=10
+            bn_every=10,
+            use_conv_head=False
         ):
         super().__init__()
 
@@ -44,11 +45,10 @@ class SLAMFormer(nn.Module, PyTorchModelHubMixin):
         self.patch_size = 14
         del self.encoder.mask_token
 
-        self.dpt = dpt
-        self.hd = hd
-
         self.retention_ratio = retention_ratio
         self.bn_every = bn_every
+
+        self.use_conv_head = use_conv_head  
 
         # ----------------------
         #  Positonal Encoding
@@ -123,19 +123,33 @@ class SLAMFormer(nn.Module, PyTorchModelHubMixin):
             rope=self.rope,
             use_checkpoint=True
         )
-        if not self.dpt:
+
+        if self.use_conv_head:
+            self.point_head = ConvHead(
+                num_features=4,
+                dim_in=dec_embed_dim,
+                projects=nn.Identity(),
+                dim_out=[2, 1],
+                dim_proj=1024,
+                dim_upsample=[256, 128, 64],
+                dim_times_res_block_hidden=2,
+                num_res_blocks=2,
+                res_block_norm='group_norm',
+                last_res_blocks=0,
+                last_conv_channels=32,
+                last_conv_size=1,
+                using_uv=True,
+            )
+        else:
             self.point_head = LinearPts3d(patch_size=14, dec_embed_dim=1024, output_dim=3)
 
-            # ----------------------
-            #     Conf Decoder
-            # ----------------------
-            self.conf_decoder = deepcopy(self.point_decoder)
-            self.conf_head = LinearPts3d(patch_size=14, dec_embed_dim=1024, output_dim=1)
-        else:
-            self.point_dpt = DPTHead(dim_in=1024, output_dim=4, activation="inv_log", conf_activation="expp1", intermediate_layer_idx=[0])
 
-        if self.hd:
-            self.point_conf_head = LinearPts3d(patch_size=14, dec_embed_dim=1024, output_dim=1)
+        # ----------------------
+        #     Conf Decoder
+        # ----------------------
+        self.conf_decoder = deepcopy(self.point_decoder)
+        self.conf_head = LinearPts3d(patch_size=14, dec_embed_dim=1024, output_dim=1)
+
 
         # ----------------------
         #  Camera Pose Decoder
@@ -423,10 +437,23 @@ class SLAMFormer(nn.Module, PyTorchModelHubMixin):
             # local points
             if not cam_only:
                 point_hidden = point_hidden.float()
-                ret = self.point_head([point_hidden[:, self.patch_start_idx:]], (H, W)).reshape(B, N, H, W, -1)
-                xy, z = ret.split([2, 1], dim=-1)
+
+                if self.use_conv_head:
+                    xy, z = self.point_head(
+                        point_hidden[:, self.patch_start_idx:],
+                        patch_h=patch_h,
+                        patch_w=patch_w,
+                    )
+                    xy = xy.permute(0, 2, 3, 1).reshape(B, N, H, W, -1)
+                    z = z.permute(0, 2, 3, 1).reshape(B, N, H, W, -1)
+                    z = z.clamp(max=15.0)
+                else:
+                    ret = self.point_head([point_hidden[:, self.patch_start_idx:]], (H, W)).reshape(B, N, H, W, -1)
+                    xy, z = ret.split([2, 1], dim=-1)
+                
                 z = torch.exp(z)
                 local_points = torch.cat([xy * z, z], dim=-1)
+
                 # confidence
                 conf_hidden = conf_hidden.float()
                 conf = self.conf_head([conf_hidden[:, self.patch_start_idx:]], (H, W)).reshape(B, N, H, W, -1)
@@ -509,7 +536,6 @@ class SLAMFormer(nn.Module, PyTorchModelHubMixin):
         self.fkv = kvcache
 
         return hidden_B
-
 
 
 
