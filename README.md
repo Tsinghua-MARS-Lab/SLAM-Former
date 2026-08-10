@@ -3,21 +3,24 @@
 <a href="https://arxiv.org/abs/2509.16909"><img src="https://img.shields.io/badge/arXiv-2509.16909-b31b1b" alt="arXiv"></a>
 <a href="https://tsinghua-mars-lab.github.io/SLAM-Former"><img src="https://img.shields.io/badge/Project_Page-green" alt="Project Page"></a>
 
-[Yijun Yuan](https://jarrome.github.io), [Zhuoguang Chen](https://zgchen33.github.io), [Kenan Li](https://connorkevin.github.io), [Weibang Wang](https://William-Wang-1009.github.io), [Hang Zhao](https://hangzhaomit.github.io)
+[Yijun Yuan](https://jarrome.github.io), [Zhuoguang Chen](https://zgchen33.github.io), [Kenan Li](https://connorkevin.github.io), [Weibang Wang](https://William-Wang-1009.github.io), [Minghui Qin](), [Zhijian Fang](), [Weicheng Zheng](https://wczheng.github.io/), [Hang Zhao](https://hangzhaomit.github.io)
 
 IIIS, Tsinghua University
+
+**ECCV 2026**
 </div>
 
 ```bibtex
 @article{slam-former,
       title={SLAM-Former: Putting SLAM into One Transformer}, 
-      author={Yijun Yuan, Zhuoguang Chen, Kenan Li, Weibang Wang, and Hang Zhao},
+      author={Yijun Yuan, Zhuoguang Chen, Kenan Li, Weibang Wang, Minghui Qin, Zhijian Fang, Weicheng Zheng, and Hang Zhao},
       journal={arXiv preprint arXiv:2509.16909},
       year={2025}
 }
 ```
 
 ### Updates
+* [Aug 8, 2026] We release another SLAM Transformer: [SLAMFormer-∞ ](https://tsinghua-mars-lab.github.io/SLAMFormer-Infinity/). Some awesome blog can help you read: [here](https://mp.weixin.qq.com/s/XSvOMV33E0aTCVm_j8Vnxw).
 * [June 18, 2026] SLAM-Former was accepted to ECCV 2026.
 * [May 11, 2026] Added two ConvHead checkpoint variants. `V1.1.pth` is recommended with `--target_size 518`; `V1.1-long.pth` is recommended with `--target_size 224`. `V1.1-long.pth` is trained with scaled sequence lengths and supports longer-sequence inference. ConvHead mainly fixes the grid artifact issue. Thanks to Pi3X for the insight.
 * [Mar 11, 2026] Released training code. See the [training branch](https://github.com/Tsinghua-MARS-Lab/SLAM-Former/tree/training) for details.
